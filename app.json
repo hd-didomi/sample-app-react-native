@@ -1,4 +1,8 @@
 {
   "name": "SampleAppReactNative",
-  "displayName": "SampleAppReactNative"
+  "displayName": "SampleAppReactNative",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-3258190382846198~3941074030",
+    "ios_app_id": "ca-app-pub-3258190382846198~4769008346"
+  }
 }
