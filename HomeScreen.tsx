@@ -6,14 +6,20 @@ import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import mobileAds from 'react-native-google-mobile-ads';
 
+const customVendorId = "customven-gPVkJxXD";
+
 const HomeScreen = ({ navigation }) => {
+
+  let listener = null;
 
   useEffect(() => {
 
+    // Load the IAB vendors; the consent status will be shared automatically with them.
+    // More informal info about Google Mobile Ads here : https://docs.page/invertase/react-native-google-mobile-ads
     mobileAds()
       .initialize()
       .then(adapterStatuses => {
-        // Initialization complete!
+        // Google Ads initialization complete!
       });
 
     const initDidomi = async () => {
@@ -31,29 +37,53 @@ const HomeScreen = ({ navigation }) => {
       } catch (error) {
         console.error("Failed to initialize Didomi:", error);
       }
-      }
+    }
 
-      initDidomi();
-      Didomi.setupUI();
+    // Initialize the SDK
+    initDidomi();
+    Didomi.setupUI();
 
-    }, []);
+    Didomi.onReady().then(() => {
+
+      // Automatically listen to the change of the custom vendor status and if enabled then call the API of the vendor
+      // https://developers.didomi.io/cmp/mobile-sdk/react-native/reference#addvendorstatuslistener
+      // https://developers.didomi.io/cmp/mobile-sdk/third-party-sdks#non-iab-vendor
+      listener = Didomi.addVendorStatusListener(customVendorId, (vendorStatus) => {
+        console.log(`${vendorStatus.id} status has changed: ${vendorStatus.enabled}`);
+        if(vendorStatus.enabled) {
+          // Call your vendor's API
+          console.log("Calling the API of the custom vendor");
+        }
+      });
+
+      // Cleanup function to remove the listener
+      return () => {
+          if(listener) {
+              Didomi.removeEventListener(listener); // Removes the listener
+              console.log('Didomi listener is removed');
+          }
+      };
+
+
+    });
+
+  }, []);
 
   const handleButton_ShowPurposesPreferences = () => {
       Didomi.onReady().then( async() => {
         await Didomi.showPreferences("purposes");
-        console.info(await Didomi.getUserStatus());
       });
   }
 
   const handleButton_ShowVendorsPreferences = () => {
     Didomi.onReady().then( async() => {
       await Didomi.showPreferences("vendors");
-      console.info(await Didomi.getUserStatus());
     });
   }
 
   const handleButton_ShowWebView = () => {
     Didomi.onReady().then( async() => {
+      console.info(await Didomi.getUserStatus());
       global.didomiJavaScriptCode = await Didomi.getJavaScriptForWebView();
       global.didomiJavaScriptCode=didomiJavaScriptCode+`true;`
       navigation.navigate('Webview');
