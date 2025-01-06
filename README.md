@@ -29,7 +29,7 @@ Definition of the actions of the buttons of our UI:
 * Show a web view.
 * Show an ad.
 
-We also automatically listen to the change of the custom vendor status and if enabled then call the API of the vendor
+We also automatically listen to the change of the custom vendor status and if enabled then call the API of the vendor.
 Documentation references :
 * https://developers.didomi.io/cmp/mobile-sdk/react-native/reference#addvendorstatuslistener
 * https://developers.didomi.io/cmp/mobile-sdk/third-party-sdks#non-iab-vendor
@@ -51,8 +51,11 @@ npx react-native run-android
 
 ### For iOS
 in the main directory of the project :
+
+```bash
 cd ios && pod install
 cd ..
 npx react-native run-ios
+```
 
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
