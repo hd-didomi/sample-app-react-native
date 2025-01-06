@@ -47,7 +47,10 @@ Documentation references :
 Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
 
 ### For Android
+
+```bash
 npx react-native run-android
+```
 
 ### For iOS
 in the main directory of the project :
