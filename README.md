@@ -67,8 +67,8 @@ If everything is set up _correctly_, you should see the sample app running in yo
 * install Homebrew :
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc # or ~/.zprofile
+source ~/.zshrc # or ~/.zprofile
 ```
 * install node :
 ```bash
