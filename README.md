@@ -62,3 +62,21 @@ npx react-native run-ios
 ```
 
 If everything is set up _correctly_, you should see the sample app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+
+### Starting from scratch on MacOS Mx:
+* install Homebrew :
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+* install node :
+```bash
+brew install node
+```
+* install watchman :
+```bash
+brew install watchman
+```
+* install XCode + xcode-select + cocoapods
+* install Android Studio + Android emulator
