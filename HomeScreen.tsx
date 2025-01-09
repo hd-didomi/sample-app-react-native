@@ -1,16 +1,18 @@
-import { View, Text, Pressable, TouchableOpacity, StyleSheet } from 'react-native';
-import { Didomi, DidomiEventType } from '@didomi/react-native';
 import React, { useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from './navigation_types';
+import { Didomi } from '@didomi/react-native';
 import DidomiLogo from './didomi_logo';
-import { createStaticNavigation, useNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import mobileAds from 'react-native-google-mobile-ads';
 
-const customVendorId = "customven-gPVkJxXD";
+const customVendorId = 'customven-gPVkJxXD';
 
-const HomeScreen = ({ navigation }) => {
+type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
-  let listener = null;
+export const HomeScreen: React.FC = () => {
+  const navigation = useNavigation<HomeScreenNavigationProp>();
 
   useEffect(() => {
 
@@ -20,6 +22,7 @@ const HomeScreen = ({ navigation }) => {
       .initialize()
       .then(adapterStatuses => {
         // Google Ads initialization complete!
+        console.log(adapterStatuses);
       });
 
     const initDidomi = async () => {
@@ -35,9 +38,9 @@ const HomeScreen = ({ navigation }) => {
         );
         console.log('Didomi is initialized');
       } catch (error) {
-        console.error("Failed to initialize Didomi:", error);
+        console.error('Failed to initialize Didomi:', error);
       }
-    }
+    };
 
     // Initialize the SDK
     initDidomi();
@@ -48,51 +51,45 @@ const HomeScreen = ({ navigation }) => {
       // Automatically listen to the change of the custom vendor status and if enabled then call the API of the vendor
       // https://developers.didomi.io/cmp/mobile-sdk/react-native/reference#addvendorstatuslistener
       // https://developers.didomi.io/cmp/mobile-sdk/third-party-sdks#non-iab-vendor
-      listener = Didomi.addVendorStatusListener(customVendorId, (vendorStatus) => {
+      Didomi.addVendorStatusListener(customVendorId, (vendorStatus) => {
         console.log(`${vendorStatus.id} status has changed: ${vendorStatus.enabled}`);
         if(vendorStatus.enabled) {
           // Call your vendor's API
-          console.log("Calling the API of the custom vendor");
+          console.log('Calling the API of the custom vendor');
         }
       });
 
       // Cleanup function to remove the listener
       return () => {
-          if(listener) {
-              Didomi.removeEventListener(listener); // Removes the listener
-              console.log('Didomi listener is removed');
-          }
+        Didomi.removeVendorStatusListener(customVendorId); // Removes the listener
+        console.log('Didomi listener is removed');
       };
-
-
     });
-
   }, []);
 
   const handleButton_ShowPurposesPreferences = () => {
       Didomi.onReady().then( async() => {
-        await Didomi.showPreferences("purposes");
+        await Didomi.showPreferences('purposes');
       });
-  }
+  };
 
   const handleButton_ShowVendorsPreferences = () => {
     Didomi.onReady().then( async() => {
-      await Didomi.showPreferences("vendors");
+      await Didomi.showPreferences('vendors');
     });
-  }
+  };
 
   const handleButton_ShowWebView = () => {
     Didomi.onReady().then( async() => {
-      console.info(await Didomi.getUserStatus());
-      global.didomiJavaScriptCode = await Didomi.getJavaScriptForWebView();
-      global.didomiJavaScriptCode=didomiJavaScriptCode+`true;`
-      navigation.navigate('Webview');
+      let didomiJavaScriptCode = await Didomi.getJavaScriptForWebView();
+      didomiJavaScriptCode = didomiJavaScriptCode + 'true;';
+      navigation.navigate('Webview', { JScode: didomiJavaScriptCode });
     });
-  }
+  };
 
   const handleButton_ShowGoogleAd = () => {
     navigation.navigate('GoogleAd');
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -130,9 +127,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
     </View>
   );
-}
-
-export default HomeScreen;
+};
 
 const styles = StyleSheet.create({
   container: {

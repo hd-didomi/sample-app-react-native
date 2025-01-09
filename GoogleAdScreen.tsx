@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Button } from 'react-native';
-import { Didomi, DidomiEventType } from '@didomi/react-native';
-import { WebView } from 'react-native-webview';
-import { createStaticNavigation, useNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AppOpenAd, InterstitialAd, RewardedAd, BannerAd, TestIds, AdEventType } from 'react-native-google-mobile-ads';
+import { useState, useEffect } from 'react';
+import { InterstitialAd, TestIds, AdEventType } from 'react-native-google-mobile-ads';
+import { useNavigation } from '@react-navigation/native';
 
 const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy';
 console.log(adUnitId);
@@ -13,8 +9,9 @@ const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
   keywords: ['fashion', 'clothing'],
 });
 
-const GoogleAdScreen = ({ navigation }) => {
+export const GoogleAdScreen: React.FC = () => {
 
+  const navigation = useNavigation();
   const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
@@ -34,16 +31,16 @@ const GoogleAdScreen = ({ navigation }) => {
 
       // Unsubscribe from events on unmount
       return () => {
-        console.log("Unsubscribe Ad events");
+        console.log('Unsubscribe Ad events');
         unsubscribeLoaded();
         unsubscribeOpened();
         unsubscribeClosed();
       };
-    }, []);
+    });
 
     if (loaded) {
       interstitial.show();
     }
-}
 
-export default GoogleAdScreen;
+    return null; // Render nothing
+};

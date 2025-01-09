@@ -1,13 +1,14 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './HomeScreen';
-import WebviewScreen from './WebviewScreen';
-import GoogleAdScreen from './GoogleAdScreen';
+import { RootStackParamList } from './navigation_types';
+import { HomeScreen } from './HomeScreen';
+import { WebviewScreen } from './WebviewScreen';
+import { GoogleAdScreen } from './GoogleAdScreen';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
-const App = () => {
+export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
@@ -17,6 +18,4 @@ const App = () => {
       </Stack.Navigator>
     </NavigationContainer>
   );
-};
-
-export default App;
+}
