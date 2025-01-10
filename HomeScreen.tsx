@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './navigation_types';
@@ -8,6 +8,7 @@ import DidomiLogo from './didomi_logo';
 import mobileAds from 'react-native-google-mobile-ads';
 
 const customVendorId = 'customven-gPVkJxXD';
+const { height } = Dimensions.get('window'); // Get the screen height
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -93,6 +94,8 @@ export const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {/* Change the status bar color */}
+      <StatusBar backgroundColor="#2E62D6" barStyle="light-content" />
       {/* Buttons Section */}
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
@@ -105,7 +108,7 @@ export const HomeScreen: React.FC = () => {
           style={styles.button}
           onPress={() => handleButton_ShowVendorsPreferences()}
         >
-          <Text style={styles.buttonText}>Show Preferences - Vendors</Text>
+          <Text style={styles.buttonText}>Show Preferences (Vendors)</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
@@ -119,11 +122,11 @@ export const HomeScreen: React.FC = () => {
         >
           <Text style={styles.buttonText}>Show Ad</Text>
         </TouchableOpacity>
-        </View>
+      </View>
 
-        {/* Image at the Bottom */}
-        <View style={styles.logoContainer}>
-          <DidomiLogo width={120} height={64} />
+      {/* Image at the Bottom */}
+      <View style={styles.logoContainer}>
+        <DidomiLogo width={120} height={64} />
       </View>
     </View>
   );
@@ -132,31 +135,32 @@ export const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white', // White background
-    justifyContent: 'space-between', // Space between buttons and image
+    backgroundColor: '#F9FAFA', // Grey 50
+    //justifyContent: 'space-between', // Space between buttons and image
   },
   buttonsContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    top: 32,
   },
   button: {
-    width: '75%', // 75% of horizontal space
-    height: '15%', // 15% of vertical space
-    backgroundColor: '#2450B2', // Button color
+    width: '75%',
+    height: '10%',
+    backgroundColor: '#2E62D6', // Electric Blue 50
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 10, // Space between buttons
-    borderRadius: 10, // Rounded corners
+    marginVertical: 15, // Space between buttons
+    borderRadius: 5, // Rounded corners
   },
   buttonText: {
+    fontFamily: 'Montserrat',
     color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
   },
   logoContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
+    alignSelf: 'center',
+    marginBottom: height * 0.03,
   },
   webviewContainer: {
     flex: 1,

@@ -1,7 +1,7 @@
-import * as React from "react"
-import Svg, { Path } from "react-native-svg"
+import * as React from 'react';
+import Svg, { Path } from 'react-native-svg';
 
-function DidomiLogo(props) {
+function DidomiLogo(props: any) {
   return (
     <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 64" {...props}>
       <Path
@@ -23,7 +23,7 @@ function DidomiLogo(props) {
         fill="#0d2632"
       />
     </Svg>
-  )
+  );
 }
 
-export default DidomiLogo
+export default DidomiLogo;
