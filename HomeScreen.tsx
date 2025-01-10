@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from './navigation_types';
 import { Didomi } from '@didomi/react-native';
 import DidomiLogo from './didomi_logo';
-import mobileAds from 'react-native-google-mobile-ads';
+import mobileAds, { InterstitialAd, TestIds, AdEventType } from 'react-native-google-mobile-ads';
 import { WebView } from 'react-native-webview';
 import Modal from 'react-native-modal';
 
 const { height } = Dimensions.get('window'); // Get the screen height
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
-
 export const HomeScreen: React.FC = () => {
 
-  const navigation = useNavigation<HomeScreenNavigationProp>();
   const customVendorId = 'customven-gPVkJxXD';
-  let didomiJavaScriptCode = '';
+  const [didomiJavaScriptCode, setDidomiJavaScriptCode] = useState('');
+  const adUnitId = TestIds.INTERSTITIAL;
+  const interstitial = InterstitialAd.createForAdRequest(adUnitId);
 
   useEffect(() => {
 
@@ -30,6 +26,17 @@ export const HomeScreen: React.FC = () => {
         console.log(adapterStatuses);
       });
 
+    // If the Google Ad is loaded then we display it
+    const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      interstitial.show();
+    });
+
+    // If the loading of Google Ad has failed then we log it
+    const unsubscribeFailed = interstitial.addAdEventListener(AdEventType.ERROR, (error) => {
+      console.log('GoogleAd loading has failed:', error);
+    });
+
+    // Init Didomi with API key and notice ID
     const initDidomi = async () => {
       try {
         Didomi.initialize(
@@ -47,8 +54,9 @@ export const HomeScreen: React.FC = () => {
       }
     };
 
-    // Initialize the SDK
+    // Initialize Didomi SDK
     initDidomi();
+    // Initialize Didomi UI
     Didomi.setupUI();
 
     Didomi.onReady().then(() => {
@@ -64,13 +72,20 @@ export const HomeScreen: React.FC = () => {
         }
       });
 
-      // Cleanup function to remove the listener
-      return () => {
-        Didomi.removeVendorStatusListener(customVendorId); // Removes the listener
-        console.log('Didomi listener is removed');
-      };
     });
-  }, []);
+
+    // On unmount : unsubscribe to listeners (Didom & GoogleAd)
+    return () => {
+      Didomi.removeVendorStatusListener(customVendorId); // Removes the listener
+      unsubscribeLoaded();
+      unsubscribeFailed();
+    };
+
+  }, [interstitial]);
+
+  //
+  // Button Handlers
+  //
 
   const handleButton_ShowPurposesPreferences = () => {
       Didomi.onReady().then( async() => {
@@ -86,18 +101,22 @@ export const HomeScreen: React.FC = () => {
 
   const handleButton_ShowWebView = () => {
     Didomi.onReady().then( async() => {
-      didomiJavaScriptCode = await Didomi.getJavaScriptForWebView();
-      didomiJavaScriptCode = didomiJavaScriptCode + 'true;';
-      openModal();
+      let jsCode = await Didomi.getJavaScriptForWebView();
+      jsCode = jsCode + 'true;';
+      openModal(jsCode);
     });
   };
 
   const handleButton_ShowGoogleAd = () => {
-    navigation.navigate('GoogleAd');
+    interstitial.load();
   };
 
+  // Display of the modal containing the Webview + set the Didomi JS code to inject
   const [isModalVisible, setModalVisible] = useState(false);
-  const openModal = () => setModalVisible(true);
+  const openModal = (jsCode: string) => {
+    setDidomiJavaScriptCode(jsCode);
+    setModalVisible(true);
+  };
   const closeModal = () => setModalVisible(false);
 
   return (
@@ -132,7 +151,7 @@ export const HomeScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Image at the Bottom */}
+      {/* Didomi logo at the Bottom */}
       <View style={styles.logoContainer}>
         <DidomiLogo width={120} height={64} />
       </View>
