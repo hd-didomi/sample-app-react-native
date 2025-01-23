@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Dimensions } from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
 import { Didomi } from '@didomi/react-native';
 import DidomiLogo from './didomi_logo';
 import mobileAds, { InterstitialAd, TestIds, AdEventType } from 'react-native-google-mobile-ads';
 import { WebView } from 'react-native-webview';
 import Modal from 'react-native-modal';
-
-const { height } = Dimensions.get('window'); // Get the screen height
 
 export const HomeScreen: React.FC = () => {
 
@@ -120,70 +118,76 @@ export const HomeScreen: React.FC = () => {
   const closeModal = () => setModalVisible(false);
 
   return (
-    <View style={styles.container}>
-      {/* Change the status bar color */}
-      <StatusBar backgroundColor="#2E62D6" barStyle="light-content" />
-      {/* Buttons Section */}
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleButton_ShowPurposesPreferences()}
-        >
-          <Text style={styles.buttonText}>Show Preferences</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleButton_ShowVendorsPreferences()}
-        >
-          <Text style={styles.buttonText}>Show Preferences (Vendors)</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleButton_ShowWebView()}
-        >
-          <Text style={styles.buttonText}>Show Web View</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleButton_ShowGoogleAd()}
-        >
-          <Text style={styles.buttonText}>Show Ad</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Didomi logo at the Bottom */}
-      <View style={styles.logoContainer}>
-        <DidomiLogo width={120} height={64} />
-      </View>
-
-      {/* Modal with WebView */}
-      <Modal
-        isVisible={isModalVisible}
-        swipeDirection="down" // Enables swipe-down to close
-        onSwipeComplete={closeModal} // Close the modal on swipe
-        onBackdropPress={closeModal} // Close on tapping outside
-        style={styles.modal}
-      >
-        <View style={styles.modalContent}>
-          {/* Close Button (Cross) */}
-          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-            <Text style={styles.closeButtonText}>×</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Change the status bar color */}
+        <StatusBar backgroundColor="#2E62D6" barStyle="light-content" />
+        {/* Buttons Section */}
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleButton_ShowPurposesPreferences()}
+          >
+            <Text style={styles.buttonText}>Show Preferences</Text>
           </TouchableOpacity>
-
-          {/* WebView */}
-          <WebView
-            source={{ uri: 'https://didomi.github.io/webpage-for-sample-app-webview/?didomiConfig.notice.enable=false' }}
-            style={styles.webview}
-            injectedJavaScript={didomiJavaScriptCode}
-            onMessage={(event) => console.log('Received message:', event.nativeEvent.data)}
-          />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleButton_ShowVendorsPreferences()}
+          >
+            <Text style={styles.buttonText}>Show Preferences (Vendors)</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleButton_ShowWebView()}
+          >
+            <Text style={styles.buttonText}>Show Web View</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleButton_ShowGoogleAd()}
+          >
+            <Text style={styles.buttonText}>Show Ad</Text>
+          </TouchableOpacity>
         </View>
-      </Modal>
-    </View>
+
+        {/* Didomi logo at the Bottom */}
+        <View style={styles.logoContainer}>
+          <DidomiLogo width={120} height={64} />
+        </View>
+
+        {/* Modal with WebView */}
+        <Modal
+          isVisible={isModalVisible}
+          swipeDirection="down" // Enables swipe-down to close
+          onSwipeComplete={closeModal} // Close the modal on swipe
+          onBackdropPress={closeModal} // Close on tapping outside
+          style={styles.modal}
+        >
+          <View style={styles.modalContent}>
+            {/* Close Button (Cross) */}
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              <Text style={styles.closeButtonText}>×</Text>
+            </TouchableOpacity>
+
+            {/* WebView */}
+            <WebView
+              source={{ uri: 'https://didomi.github.io/webpage-for-sample-app-webview/?didomiConfig.notice.enable=false' }}
+              style={styles.webview}
+              injectedJavaScript={didomiJavaScriptCode}
+              onMessage={(event) => console.log('Received message:', event.nativeEvent.data)}
+            />
+          </View>
+        </Modal>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F9FAFA', // Grey 50
+  },
   container: {
     flex: 1,
     backgroundColor: '#F9FAFA', // Grey 50
@@ -195,13 +199,13 @@ const styles = StyleSheet.create({
     top: 32,
   },
   button: {
-    width: '75%',
+    width: '65%',
     height: '10%',
     backgroundColor: '#2E62D6', // Electric Blue 50
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 15, // Space between buttons
-    borderRadius: 5, // Rounded corners
+    borderRadius: 4, // Rounded corners
   },
   buttonText: {
     fontFamily: 'Montserrat',
@@ -210,7 +214,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignSelf: 'center',
-    marginBottom: height * 0.03,
+    //marginBottom: height * 0.01,
   },
   modal: {
     margin: 0,
