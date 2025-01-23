@@ -15,11 +15,7 @@ This is a [**React Native**](https://reactnative.dev) project, bootstrapped usin
 
 ## Main Content
 
-**App.tsx**
-
-* It contains the definition of the navigation through the app, including a reference for each screen
-
-**Homescreen.tsx**
+**HomeScreen.tsx**
 
 * Initialize the Didomi SDK.
   
@@ -29,18 +25,16 @@ Definition of the actions of the buttons of our UI:
 * Show a web view.
 * Show an ad.
 
-We also automatically listen to the change of the custom vendor status and if enabled then call the API of the vendor.
+About the web view: you need to embed the Didomi Web SDK in the HTML page that is loaded by the web view so that it can collect the consent information passed from the app and share it with vendors. The list of vendors configured in the web SDK in the web view should be a subset of the list of vendors configured in the mobile app. That will ensure that the WebView has all the consent information it needs and does not re-collect consent. See [Share consent with WebViews](https://developers.didomi.io/cmp/mobile-sdk/share-consent-with-webviews).
+
+About conditioning a custom vendor:
+We listen to the change of the custom vendor status and if enabled then call the API of the vendor.
 Documentation references :
 * https://developers.didomi.io/cmp/mobile-sdk/react-native/reference#addvendorstatuslistener
 * https://developers.didomi.io/cmp/mobile-sdk/third-party-sdks#non-iab-vendor
 
-**WebviewScreen.tsx**
-
-* Load a WebView and share consent with it. You need to embed the Didomi Web SDK in the HTML page that is loaded by the web view so that it can collect the consent information passed from the app and share it with vendors. The list of vendors configured in the web SDK in the web view should be a subset of the list of vendors configured in the mobile app. That will ensure that the WebView has all the consent information it needs and does not re-collect consent. See [Share consent with WebViews](https://developers.didomi.io/cmp/mobile-sdk/share-consent-with-webviews).
-
-**GoogleAdScreen.tsx**
-
-* Load a Google Ad for testing. The status of the vendor is retrieved automatically (IAB vendor) and the Ad is displayed only if the vendor "Google Advertising Products" is enabled.
+About conditioning an IAB vendor (Google Mobile Ads in our case): 
+The status of the vendor is retrieved automatically (IAB vendor) and the Ad is displayed only if the vendor "Google Advertising Products" is enabled.
 
 ## Compilation
 
