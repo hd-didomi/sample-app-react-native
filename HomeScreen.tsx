@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import React, { useRef, useEffect, useState } from 'react';
+import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, StatusBar, findNodeHandle } from 'react-native';
 import { Didomi } from '@didomi/react-native';
 import DidomiLogo from './didomi_logo';
 import mobileAds, { InterstitialAd, TestIds, AdEventType } from 'react-native-google-mobile-ads';
@@ -12,6 +12,7 @@ export const HomeScreen: React.FC = () => {
   const [didomiJavaScriptCode, setDidomiJavaScriptCode] = useState('');
   const adUnitId = TestIds.INTERSTITIAL;
   const interstitial = InterstitialAd.createForAdRequest(adUnitId);
+  const webViewRef = useRef(null);
 
   useEffect(() => {
 
@@ -38,13 +39,15 @@ export const HomeScreen: React.FC = () => {
     const initDidomi = async () => {
       try {
         Didomi.initialize(
-          '7dd8ec4e-746c-455e-a610-99121b4148df',
+          '7780e96f-ef1b-411e-abc7-582f12ce44ce',
           undefined,
           undefined,
           undefined,
           false,
           undefined,
-          'DVLP9Qtd'
+          undefined,
+          'qt3ptewz',
+          true
         );
         console.log('Didomi is initialized');
       } catch (error) {
@@ -114,6 +117,15 @@ export const HomeScreen: React.FC = () => {
   const openModal = (jsCode: string) => {
     setDidomiJavaScriptCode(jsCode);
     setModalVisible(true);
+
+    // Timeout to ensure the WebView is rendered before requesting focus
+    setTimeout(() => {
+      if (webViewRef.current) {
+        // Use the WebView's requestFocus method
+        webViewRef.current.requestFocus();
+      }
+    }, 100); // Delay ensures the WebView is mounted and rendered
+
   };
   const closeModal = () => setModalVisible(false);
 
@@ -158,9 +170,11 @@ export const HomeScreen: React.FC = () => {
         {/* Modal with WebView */}
         <Modal
           isVisible={isModalVisible}
-          swipeDirection="down" // Enables swipe-down to close
-          onSwipeComplete={closeModal} // Close the modal on swipe
-          onBackdropPress={closeModal} // Close on tapping outside
+          animationType="slide"
+          presentationStyle="fullScreen"
+          //swipeDirection="down" // Enables swipe-down to close
+          //onSwipeComplete={closeModal} // Close the modal on swipe
+          //onBackdropPress={closeModal} // Close on tapping outside
           style={styles.modal}
         >
           <View style={styles.modalContent}>
@@ -171,9 +185,11 @@ export const HomeScreen: React.FC = () => {
 
             {/* WebView */}
             <WebView
-              source={{ uri: 'https://didomi.github.io/webpage-for-sample-app-webview/?didomiConfig.notice.enable=false' }}
+              ref={webViewRef}
+              isVisible={isModalVisible}
+              source={{ uri: 'http://192.168.1.119/test/index.html' }}
               style={styles.webview}
-              injectedJavaScript={didomiJavaScriptCode}
+              //injectedJavaScript={didomiJavaScriptCode}
               onMessage={(event) => console.log('Received message:', event.nativeEvent.data)}
             />
           </View>
@@ -221,11 +237,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    height: '94%', // Makes the modal take 93% of the screen height
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    overflow: 'hidden', // Ensures the WebView doesn't overflow the rounded corners
+    flex: 1,
+    //height: '100%', // Makes the modal take 93% of the screen height
+    backgroundColor: 'white'
+    //borderTopLeftRadius: 20,
+    //borderTopRightRadius: 20,
+    //overflow: 'hidden', // Ensures the WebView doesn't overflow the rounded corners
   },
   closeButton: {
     position: 'absolute',
@@ -242,6 +259,5 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1, // Makes the WebView fill the modal
-    marginTop: 40, // Pushes the content down to avoid overlap with the close button
   },
 });
