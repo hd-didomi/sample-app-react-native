@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
-import { Didomi } from '@didomi/react-native';
-import DidomiLogo from './didomi_logo';
-import mobileAds, { InterstitialAd, TestIds, AdEventType } from 'react-native-google-mobile-ads';
 import { WebView } from 'react-native-webview';
 import Modal from 'react-native-modal';
+import mobileAds, { InterstitialAd, TestIds, AdEventType } from 'react-native-google-mobile-ads';
+import { Didomi } from '@didomi/react-native';
+import DidomiLogo from './didomi_logo';
 
 export const HomeScreen: React.FC = () => {
 
   const customVendorId = 'customven-gPVkJxXD';
   const [didomiJavaScriptCode, setDidomiJavaScriptCode] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
   const adUnitId = TestIds.INTERSTITIAL;
   const interstitial = InterstitialAd.createForAdRequest(adUnitId);
 
@@ -86,9 +87,9 @@ export const HomeScreen: React.FC = () => {
   //
 
   const handleButton_ShowPurposesPreferences = () => {
-      Didomi.onReady().then( async() => {
-        await Didomi.showPreferences('purposes');
-      });
+    Didomi.onReady().then( async() => {
+      await Didomi.showPreferences('purposes');
+    });
   };
 
   const handleButton_ShowVendorsPreferences = () => {
@@ -110,7 +111,6 @@ export const HomeScreen: React.FC = () => {
   };
 
   // Display of the modal containing the Webview + set the Didomi JS code to inject
-  const [isModalVisible, setModalVisible] = useState(false);
   const openModal = (jsCode: string) => {
     setDidomiJavaScriptCode(jsCode);
     setModalVisible(true);
