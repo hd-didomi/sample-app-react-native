@@ -1,8 +1,8 @@
-#  Didomi - Sample App for React-native
+#  Didomi - Sample App for React Native
 
 ## Description
 
-**This sample app demonstrates how to implement Didomi in a simple mobile app project using React-native.**
+**This sample app demonstrates how to implement Didomi in a simple mobile app project using React Native.**
 
 In particular, it shows how to:
 * Condition a custom vendor to consent
